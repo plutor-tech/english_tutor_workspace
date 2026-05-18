@@ -1,0 +1,8 @@
+name: english_tutor_workspace
+environment:
+  sdk: ^3.11.3
+
+workspace:
+  - apps/tutor_client
+  - apps/tutor_server
+  - packages/tutor_shared

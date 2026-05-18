@@ -2,6 +2,7 @@ name: tutor_client
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0+1
+resolution: workspace
 
 environment:
   sdk: ^3.11.3
@@ -9,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  tutor_shared:
 
 dev_dependencies:
   flutter_test:
