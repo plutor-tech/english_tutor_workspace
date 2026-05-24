@@ -1,6 +1,3 @@
-/// Enums and classes representing the user's localized setup and interests
-/// for conversational guidance in the AI English Tutoring engine.
-
 /// Supported variants of the English language.
 enum TargetEnglishVariant {
   british,

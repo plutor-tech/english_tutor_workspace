@@ -26,13 +26,15 @@
     },
     {
       "name": "tutor_server",
-      "version": "1.0.0",
+      "version": "1.0.0+1",
       "dependencies": [
-        "path",
+        "dart_frog",
+        "mongo_dart",
         "tutor_shared"
       ],
       "devDependencies": [
-        "lints",
+        "dart_frog_lint",
+        "mocktail",
         "test"
       ]
     },
@@ -82,9 +84,50 @@
       "dependencies": []
     },
     {
-      "name": "path",
-      "version": "1.9.1",
+      "name": "mocktail",
+      "version": "1.0.5",
+      "dependencies": [
+        "collection",
+        "matcher",
+        "test_api"
+      ]
+    },
+    {
+      "name": "dart_frog_lint",
+      "version": "0.1.2",
       "dependencies": []
+    },
+    {
+      "name": "mongo_dart",
+      "version": "0.10.8",
+      "dependencies": [
+        "basic_utils",
+        "bson",
+        "collection",
+        "crypto",
+        "decimal",
+        "fixnum",
+        "logging",
+        "mongo_dart_query",
+        "path",
+        "pool",
+        "sasl_scram",
+        "uuid",
+        "vy_string_utils"
+      ]
+    },
+    {
+      "name": "dart_frog",
+      "version": "1.2.6",
+      "dependencies": [
+        "http_methods",
+        "http_parser",
+        "meta",
+        "mime",
+        "shelf",
+        "shelf_hotreload",
+        "shelf_static"
+      ]
     },
     {
       "name": "flutter_lints",
@@ -272,6 +315,11 @@
       ]
     },
     {
+      "name": "path",
+      "version": "1.9.1",
+      "dependencies": []
+    },
+    {
       "name": "package_config",
       "version": "2.2.0",
       "dependencies": [
@@ -367,8 +415,118 @@
       ]
     },
     {
+      "name": "vy_string_utils",
+      "version": "0.4.7",
+      "dependencies": [
+        "power_extensions"
+      ]
+    },
+    {
+      "name": "sasl_scram",
+      "version": "0.1.2",
+      "dependencies": [
+        "buffer",
+        "collection",
+        "crypto",
+        "saslprep"
+      ]
+    },
+    {
+      "name": "uuid",
+      "version": "4.5.3",
+      "dependencies": [
+        "crypto",
+        "fixnum"
+      ]
+    },
+    {
+      "name": "decimal",
+      "version": "3.2.4",
+      "dependencies": [
+        "intl",
+        "rational"
+      ]
+    },
+    {
+      "name": "basic_utils",
+      "version": "5.8.2",
+      "dependencies": [
+        "archive",
+        "http",
+        "json_annotation",
+        "logging",
+        "pointycastle"
+      ]
+    },
+    {
+      "name": "mongo_dart_query",
+      "version": "5.0.3",
+      "dependencies": [
+        "bson",
+        "fixnum",
+        "meta"
+      ]
+    },
+    {
+      "name": "logging",
+      "version": "1.3.0",
+      "dependencies": []
+    },
+    {
+      "name": "fixnum",
+      "version": "1.1.1",
+      "dependencies": []
+    },
+    {
+      "name": "crypto",
+      "version": "3.0.7",
+      "dependencies": [
+        "typed_data"
+      ]
+    },
+    {
+      "name": "bson",
+      "version": "5.0.8",
+      "dependencies": [
+        "decimal",
+        "fixnum",
+        "packages_extensions",
+        "power_extensions",
+        "rational",
+        "uuid"
+      ]
+    },
+    {
+      "name": "shelf_hotreload",
+      "version": "1.6.0",
+      "dependencies": [
+        "hotreloader",
+        "logging"
+      ]
+    },
+    {
+      "name": "mime",
+      "version": "2.0.0",
+      "dependencies": []
+    },
+    {
       "name": "meta",
       "version": "1.17.0",
+      "dependencies": []
+    },
+    {
+      "name": "http_parser",
+      "version": "4.1.2",
+      "dependencies": [
+        "collection",
+        "source_span",
+        "string_scanner",
+        "typed_data"
+      ]
+    },
+    {
+      "name": "http_methods",
+      "version": "1.1.1",
       "dependencies": []
     },
     {
@@ -425,11 +583,6 @@
       ]
     },
     {
-      "name": "logging",
-      "version": "1.3.0",
-      "dependencies": []
-    },
-    {
       "name": "web_socket",
       "version": "1.0.1",
       "dependencies": [
@@ -440,13 +593,6 @@
       "name": "web",
       "version": "1.1.1",
       "dependencies": []
-    },
-    {
-      "name": "crypto",
-      "version": "3.0.7",
-      "dependencies": [
-        "typed_data"
-      ]
     },
     {
       "name": "vm_service",
@@ -499,21 +645,6 @@
       "dependencies": []
     },
     {
-      "name": "mime",
-      "version": "2.0.0",
-      "dependencies": []
-    },
-    {
-      "name": "http_parser",
-      "version": "4.1.2",
-      "dependencies": [
-        "collection",
-        "source_span",
-        "string_scanner",
-        "typed_data"
-      ]
-    },
-    {
       "name": "convert",
       "version": "3.1.2",
       "dependencies": [
@@ -552,6 +683,90 @@
       ]
     },
     {
+      "name": "power_extensions",
+      "version": "0.2.4",
+      "dependencies": []
+    },
+    {
+      "name": "saslprep",
+      "version": "1.0.3",
+      "dependencies": [
+        "unorm_dart"
+      ]
+    },
+    {
+      "name": "buffer",
+      "version": "1.2.3",
+      "dependencies": []
+    },
+    {
+      "name": "rational",
+      "version": "2.2.3",
+      "dependencies": []
+    },
+    {
+      "name": "intl",
+      "version": "0.20.2",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "archive",
+      "version": "4.0.9",
+      "dependencies": [
+        "path",
+        "posix"
+      ]
+    },
+    {
+      "name": "pointycastle",
+      "version": "4.0.0",
+      "dependencies": [
+        "collection",
+        "convert"
+      ]
+    },
+    {
+      "name": "json_annotation",
+      "version": "4.12.0",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "http",
+      "version": "1.6.0",
+      "dependencies": [
+        "async",
+        "http_parser",
+        "meta",
+        "web"
+      ]
+    },
+    {
+      "name": "packages_extensions",
+      "version": "0.1.2",
+      "dependencies": [
+        "decimal",
+        "power_extensions",
+        "rational"
+      ]
+    },
+    {
+      "name": "hotreloader",
+      "version": "4.4.0",
+      "dependencies": [
+        "logging",
+        "path",
+        "stream_transform",
+        "vm_service",
+        "watcher"
+      ]
+    },
+    {
       "name": "leak_tracker_testing",
       "version": "3.0.2",
       "dependencies": [
@@ -578,6 +793,30 @@
         "meta",
         "path"
       ]
+    },
+    {
+      "name": "unorm_dart",
+      "version": "0.3.2",
+      "dependencies": []
+    },
+    {
+      "name": "posix",
+      "version": "6.5.0",
+      "dependencies": [
+        "ffi",
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "stream_transform",
+      "version": "2.1.1",
+      "dependencies": []
+    },
+    {
+      "name": "ffi",
+      "version": "2.2.0",
+      "dependencies": []
     }
   ],
   "configVersion": 1
