@@ -104,8 +104,20 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "dart_frog_auth",
+      "rootUri": "file:///Users/aritramukherjee/.pub-cache/hosted/pub.dev/dart_frog_auth-1.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "dart_frog_lint",
       "rootUri": "file:///Users/aritramukherjee/.pub-cache/hosted/pub.dev/dart_frog_lint-0.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "dart_jsonwebtoken",
+      "rootUri": "file:///Users/aritramukherjee/.pub-cache/hosted/pub.dev/dart_jsonwebtoken-3.4.1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
