@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tutor_server/common.dart';
-import 'package:tutor_server/dbaas/db_connection_manager.dart';
+import 'package:tutor_server/src/common.dart';
+import 'package:tutor_server/src/dbaas/db_connection_manager.dart';
 import 'package:tutor_shared/tutor_shared.dart';
 
 /// Manages the user registry in the database.

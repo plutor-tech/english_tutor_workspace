@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tutor_server/dbaas/db_connection_manager.dart';
+import 'package:tutor_server/src/dbaas/db_connection_manager.dart';
 import 'package:tutor_shared/tutor_shared.dart';
 
 /// Manages user profiles in the database.

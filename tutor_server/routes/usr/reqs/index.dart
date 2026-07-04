@@ -1,14 +1,31 @@
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
+import 'package:tutor_server/src/common.dart';
+import 'package:tutor_server/src/trace/trace.dart';
 
-Future<Response> onRequest(RequestContext context) {
+// TO-DO: "api/v1" ?? like: "routes.api.v1.usr.reqs.index.dart" ?
+const fName = 'routes/usr/reqs/index.dart';
+
+
+Future<Response> onRequest(RequestContext context) async {
+  const fnSignature = '$fName:onRequest';
   final method = context.request.method;
   final userid = context.read<String>();
+  final req = context.read<RequestInfo>();
+  final body = await context.request.body();
 
-  /// DEBUG: Log the incoming request method for debugging purposes
-  stdout.writeln(
-    'U_Reqs: Received ${method.toString().toUpperCase()} '
-    'request from user with ID: $userid.'
+  Trace.debug( //DEBUG
+    'Received user preferences access endpoint inquiry.',
+    id: req.id,
+    src: fnSignature,
+    tag: TraceTag.entry,
+    name: 'x01',
+    pld: {
+      'method': method.name,
+      'headers': context.request.headers.toString(),
+      'user_id': userid,
+      'body': body,
+    },
   );
 
   return switch (method) {

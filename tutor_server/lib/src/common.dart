@@ -2,6 +2,17 @@
   Shared utility functions and definitions to be used for dbaas classes.
   */
 
+// Logger //
+
+/// UUID wrapper class
+class RequestInfo {
+  /// Constructor
+  RequestInfo(this.id);
+  /// The uuid string
+  String id;
+}
+
+
 // Exception and Error Handling //
 
 /// Fields defined for validation expception.

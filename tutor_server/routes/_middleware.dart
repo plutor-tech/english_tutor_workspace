@@ -1,16 +1,26 @@
 import 'package:dart_frog/dart_frog.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tutor_server/dbaas/db_connection_manager.dart';
+import 'package:tutor_server/src/common.dart';
+import 'package:tutor_server/src/dbaas/db_connection_manager.dart';
+import 'package:uuid/uuid.dart';
 
 Handler middleware(Handler handler) {
   return handler
-  .use(attachDb());
+  .use(attachDb())
+  .use(attachRID());
 }
 
 Middleware attachDb() {
   return (handler) => (context) async {
     final db = await DbConnectionManager.dbConnection;
     return handler(context.provide<Db>(() => db));
+  };
+}
+
+Middleware attachRID() {
+  return (handler) => (context) async {
+    final rid = RequestInfo(const Uuid().v4());
+    return handler(context.provide<RequestInfo>(() => rid));
   };
 }
 

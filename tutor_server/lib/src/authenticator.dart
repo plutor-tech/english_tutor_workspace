@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:tutor_server/common.dart';
-import 'package:tutor_server/dbaas/db_user_registry_manager.dart';
+import 'package:tutor_server/src/common.dart';
+import 'package:tutor_server/src/dbaas/db_user_registry_manager.dart';
 
 /// The user authenticator class.
 class UserAuthenticator {

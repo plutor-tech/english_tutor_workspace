@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:tutor_server/common.dart';
-import 'package:tutor_server/dbaas/db_user_registry_manager.dart';
+import 'package:tutor_server/src/common.dart';
+import 'package:tutor_server/src/dbaas/db_user_registry_manager.dart';
 
 /// Username value validity check.
 extension _UsernameValidityCheck on String {

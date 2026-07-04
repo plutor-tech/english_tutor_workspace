@@ -1,5 +1,5 @@
 import 'package:dart_frog/dart_frog.dart';
-import 'package:tutor_server/authenticator.dart';
+import 'package:tutor_server/src/authenticator.dart';
 
 final userAuth = UserAuthenticator();
 

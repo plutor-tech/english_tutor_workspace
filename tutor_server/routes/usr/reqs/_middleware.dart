@@ -1,6 +1,6 @@
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_auth/dart_frog_auth.dart';
-import 'package:tutor_server/authenticator.dart';
+import 'package:tutor_server/src/authenticator.dart';
 
 Handler middleware(Handler handler) {
   return handler

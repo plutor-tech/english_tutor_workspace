@@ -1,12 +1,28 @@
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
-import 'package:tutor_server/authenticator.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tutor_server/src/authenticator.dart';
+import 'package:tutor_server/src/common.dart';
+import 'package:tutor_server/src/trace/trace.dart';
+
+const fName = 'routes/usr/auth/sign_in/native.dart';
 
 Future<Response> onRequest(RequestContext context) async {
+  const fnSignature = '$fName:onRequest';
   final method = context.request.method;
-
-  /// DEBUG: Log the incoming request method for debugging purposes
-  stdout.writeln('U_Auth: Received ${method.toString().toUpperCase()} request');
+  final req = context.read<RequestInfo>();
+  
+  Trace.debug(//DEBUG
+    'Received sign-in request',
+    id: req.id,
+    src: fnSignature,
+    tag: TraceTag.entry,
+    name: 'x01',
+    pld: {
+      'method': method.name,
+      'headers': context.request.headers.toString(),
+    },
+  );
 
   return switch (method) {
     HttpMethod.post => _handlePost(context),
@@ -21,7 +37,20 @@ Future<Response> onRequest(RequestContext context) async {
 
 /// Handle POST request for user sign-in
 Future<Response> _handlePost(RequestContext context) async {
+  const fnSignature = '$fName:_handlePost';
   final body = await context.request.json() as Map<String, dynamic>;
+  final req = context.read<RequestInfo>();
+
+  Trace.debug(
+    'Processing sign-in request.',
+    id: req.id,
+    src: fnSignature,
+    tag: TraceTag.entry,
+    name: 'x02',
+    pld: {
+      'request_body': body,
+    },
+  );
 
   if ((!body.containsKey('username')) || (!body.containsKey('password'))) {
     return Response.json(
@@ -48,8 +77,17 @@ Future<Response> _handlePost(RequestContext context) async {
     );
 
     if (userid != null) {
-      // TO-DO: Implement proper logging.
-      stdout.writeln('User $userid successfully authenticated.');
+      Trace.debug(
+        'User $userid successfully authenticated.',
+        id: req.id,
+        src: fnSignature,
+        tag: TraceTag.exit,
+        name: 'x04',
+        pld: {
+          'username': username,
+          'user_id': userid,          
+        },
+      );
       return Response.json(
         body: {
           'token': uauth.generateToken(userid: userid),
@@ -57,14 +95,32 @@ Future<Response> _handlePost(RequestContext context) async {
         },
       );
     } else {
-      // TO-DO: Implement proper logging.
-      stdout.writeln('Failed to authecticate the user $userid.');
+      Trace.debug(
+        'Failed to authenticate the user $userid.',
+        id: req.id,
+        src: fnSignature,
+        tag: TraceTag.error,
+        name: 'x03',
+        pld: {
+          'username': username,
+        },
+      );
       return Response.json(
         statusCode: HttpStatus.unauthorized,
-        body: {'error: Failed to authecticate the user.'},
+        body: {'error': 'Failed to authenticate the user.'},
       );
     }
   } catch (e) {
+    Trace.error(
+      'Internal error during user authentication: $e',
+      id: req.id,
+      src: fnSignature,
+      tag: TraceTag.error,
+      name: 'x05',
+      pld: {
+        'error': e.toString(),
+      },
+    );
     return Response.json(
       statusCode: HttpStatus.internalServerError,
       body: {'error': 'Failed to serve the request.'},
