@@ -6,27 +6,36 @@ import 'package:mongo_dart/mongo_dart.dart';
 class DbConnectionManager {
   /// Private static variable to hold the active database connection instance.
   static Db? _db;
-  
+
   /* NOTE: In a production environment, this should be loaded from 
      environment variables. For security reasons, avoid hardcoding sensitive 
      information like database credentials in your source code.
      */
   /// MongoDB Atlas connection username.
-  static const String _uname = 'plutoraritra';
+  static late String _uname;
+
   /// MongoDB Atlas connection password
-  static const String _pword = 'uf36hSGyukBRjLWT'; //TO-DO: Compromised, change!
+  static late String _pword; // 'uf36hSGyukBRjLWT' Compromised, change!
   /// MongoDB Atlas cluster name.
-  static const String _clustr = 'plutorcluster0';
+  static late String _clstr;
+
   /// MongoDB database name.
-  static const String _dbName = 'english_tutor_db';
+  static late String _dname;
+
   /// MongoDB application name (for connection metadata).
-  static const String _appName = 'EnglishTutorServer';
-  /// MongoDB connection URI.
-  static const String _mongoUri = 'mongodb+srv://$_uname:$_pword@$_clustr.gfoh4ue.mongodb.net/$_dbName?appName=$_appName';
+  static late String _aname;
+
   /// Timeout duration for database connection attempts.
-  static const Duration _connectionTimeout = const Duration(seconds: 10);
+  static const Duration _conTO = Duration(seconds: 10);
+
   /// Timeout exception error messsage.
-  static const _toExcepErrMsg = 'MongoDB authentication handshake timed out';
+  static const _toExcpErrMsg = 'MongoDB authentication handshake timed out';
+
+  static set dbUname(String uname) => _uname = uname;
+  static set dbPword(String pword) => _pword = pword;
+  static set dbClstr(String clstr) => _clstr = clstr;
+  static set dbDName(String dname) => _dname = dname;
+  static set dbAName(String aname) => _aname = aname;
 
   /// Returns an active instance of the database connection.
   /// Automatically initializes and opens the connection if it doesn't exist.
@@ -35,21 +44,26 @@ class DbConnectionManager {
     if (_db != null && _db!.isConnected) {
       return _db!;
     }
-    return await _initializeDbConnection();
+    return _initializeDbConnection();
   }
 
   /// Initializes and opens the database connection.
   static Future<Db> _initializeDbConnection() async {
     try {
-      _db = await Db.create(_mongoUri).timeout(
-        _connectionTimeout,
-        onTimeout: () => throw TimeoutException(_toExcepErrMsg)
+      /// MongoDB connection URI.
+      final mongoUri =
+          'mongodb+srv://$_uname:$_pword@$_clstr.gfoh4ue.mongodb.net/$_dname?appName=$_aname';
+
+      _db = await Db.create(mongoUri).timeout(
+        _conTO,
+        onTimeout: () => throw TimeoutException(_toExcpErrMsg),
       );
+
       await _db!.open().timeout(
-        _connectionTimeout,
+        _conTO,
         onTimeout: () {
           _db!.close();
-          throw TimeoutException(_toExcepErrMsg);
+          throw TimeoutException(_toExcpErrMsg);
         },
       );
       // ⚠️ TO-DO: Implement proper logging.
