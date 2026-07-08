@@ -13,10 +13,14 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
 
   // Determine environment
   final isProductionEnv = Platform.environment['NODE_ENV'] == 'production';
+  final operationalMode = Platform.environment['RUN_MODE'] ?? 'standard';
 
   /// 1. INITIALIZE LOGGING AND DATABASE
 
-  await logSetup(isProductionEnv: isProductionEnv);
+  await logSetup(
+    isProductionEnv: isProductionEnv,
+    operationalMode: operationalMode
+  );
   Trace.info(
     'Logging system initialized successfully.',
     id: id,
@@ -76,28 +80,30 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   }
 }
 
-Future<bool> logSetup({required bool isProductionEnv}) async {
+Future<bool> logSetup({
+  required bool isProductionEnv,
+  required String operationalMode
+  }) async {
   // Instantiation of streaming trace interceptors
-  initLogger(isProduction: isProductionEnv);
+  initLogger(isProduction: isProductionEnv, operationalMode: operationalMode);
   return true;
 }
 
 Future<bool> dbSetup({required bool isProductionEnv}) async {
   try {
     if (isProductionEnv) {
-      DbConnectionManager.dbUname = Platform.environment['DB_UNAME'] ?? '';
-      DbConnectionManager.dbPword = Platform.environment['DB_PWORD'] ?? '';
-      DbConnectionManager.dbClstr = Platform.environment['DB_CLSTR'] ?? '';
-      DbConnectionManager.dbDName = Platform.environment['DB_DNAME'] ?? '';
-      DbConnectionManager.dbAName = Platform.environment['WS_ANAME'] ?? '';
+      DbConnectionManager.uname = Platform.environment['DB_UNAME'] ?? '';
+      DbConnectionManager.pword = Platform.environment['DB_PWORD'] ?? '';
+      DbConnectionManager.clstr = Platform.environment['DB_CLSTR'] ?? '';
+      DbConnectionManager.dname = Platform.environment['DB_DNAME'] ?? '';
+      DbConnectionManager.aname = Platform.environment['WS_ANAME'] ?? '';
     } else {
       final env = DotEnv(includePlatformEnvironment: true)..load();
-
-      DbConnectionManager.dbUname = env['DB_UNAME'] ?? '';
-      DbConnectionManager.dbPword = env['DB_PWORD'] ?? '';
-      DbConnectionManager.dbClstr = env['DB_CLSTR'] ?? '';
-      DbConnectionManager.dbDName = env['DB_DNAME'] ?? '';
-      DbConnectionManager.dbAName = env['WS_ANAME'] ?? '';
+      DbConnectionManager.uname = env['DB_UNAME'] ?? '';
+      DbConnectionManager.pword = env['DB_PWORD'] ?? '';
+      DbConnectionManager.clstr = env['DB_CLSTR'] ?? '';
+      DbConnectionManager.dname = env['DB_DNAME'] ?? '';
+      DbConnectionManager.aname = env['WS_ANAME'] ?? '';
     }
 
     /// Initialize the database connection before starting the server. This

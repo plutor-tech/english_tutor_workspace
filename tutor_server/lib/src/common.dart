@@ -16,7 +16,12 @@ class RequestInfo {
 // Exception and Error Handling //
 
 /// Fields defined for validation expception.
-enum ValExpField {username, password}
+enum ValExpField {
+  /// For Invalid Username Exception
+  username,
+  /// For Invalid Password Exception
+  password
+}
 
 /// Validation Exception.
 class ValidationException implements Exception {

@@ -2,9 +2,13 @@ import 'package:logging/logging.dart';
 
 /// Flow markers to easily trace execution lifecycles or visualize sequences.
 enum TraceTag {
+  /// Entry point of a function or method.
   entry,
+  /// Exit point of a function or method.
   exit,
+  /// Significant step of a function or method.
   step,
+  /// Error point of a function or method.
   error,
 }
 

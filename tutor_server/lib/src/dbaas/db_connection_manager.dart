@@ -12,30 +12,21 @@ class DbConnectionManager {
      information like database credentials in your source code.
      */
   /// MongoDB Atlas connection username.
-  static late String _uname;
-
+  static late String uname;
   /// MongoDB Atlas connection password
-  static late String _pword; // 'uf36hSGyukBRjLWT' Compromised, change!
+  static late String pword;
   /// MongoDB Atlas cluster name.
-  static late String _clstr;
-
+  static late String clstr;
   /// MongoDB database name.
-  static late String _dname;
-
+  static late String dname;
   /// MongoDB application name (for connection metadata).
-  static late String _aname;
+  static late String aname;
 
   /// Timeout duration for database connection attempts.
   static const Duration _conTO = Duration(seconds: 10);
 
   /// Timeout exception error messsage.
   static const _toExcpErrMsg = 'MongoDB authentication handshake timed out';
-
-  static set dbUname(String uname) => _uname = uname;
-  static set dbPword(String pword) => _pword = pword;
-  static set dbClstr(String clstr) => _clstr = clstr;
-  static set dbDName(String dname) => _dname = dname;
-  static set dbAName(String aname) => _aname = aname;
 
   /// Returns an active instance of the database connection.
   /// Automatically initializes and opens the connection if it doesn't exist.
@@ -52,7 +43,7 @@ class DbConnectionManager {
     try {
       /// MongoDB connection URI.
       final mongoUri =
-          'mongodb+srv://$_uname:$_pword@$_clstr.gfoh4ue.mongodb.net/$_dname?appName=$_aname';
+          'mongodb+srv://$uname:$pword@$clstr.gfoh4ue.mongodb.net/$dname?appName=$aname';
 
       _db = await Db.create(mongoUri).timeout(
         _conTO,
