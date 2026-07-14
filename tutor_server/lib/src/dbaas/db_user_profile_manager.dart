@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tutor_server/src/dbaas/db_connection_manager.dart';
 import 'package:tutor_shared/tutor_shared.dart';
@@ -19,9 +18,11 @@ class DbUserProfileManager {
       db = await DbConnectionManager.dbConnection;
       coll = db.collection(_collName);
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Error initializing database connection: $e');
-      rethrow;
+      DbConnectionManager.trace.severe(
+        'Error initializing database connection: $e.',
+        name: '0x07',
+      );
+      rethrow; // NetworkException('$e'); ??
     }
     try {
       final record = await coll.findOne({'userid': userid});
@@ -31,16 +32,23 @@ class DbUserProfileManager {
           displayname: record['displayname'].toString(),
         );
       } else {
+        DbConnectionManager.trace.info(
+          'User not found.',
+          name: '0x08',
+          assoc: userid
+        );
         return null;
       }
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Error finding user by username: $e');
+      DbConnectionManager.trace.error(
+        'Error finding user by userid: $e.',
+        name: '0x09',
+      );
       rethrow;
     }
   }
 
-    /// Adds a new user record with the given username and password. Returns 
+  /// Adds a new user record with the given username and password. Returns 
   /// the username of the created user if registration is successful, or null.
   Future<bool?> addNewRecord({
     required String userid,
@@ -53,8 +61,10 @@ class DbUserProfileManager {
       db = await DbConnectionManager.dbConnection;
       coll = db.collection(_collName);
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Error initializing database connection: $e');
+      DbConnectionManager.trace.severe(
+        'Error initializing database connection: $e.',
+        name: '0x0a',
+      );
       rethrow;
     }
 
@@ -72,12 +82,17 @@ class DbUserProfileManager {
           'displayname': newUser.displayname,
         });
 
-        stdout.writeln('New user registered: $newUser'); // DEBUG
+        DbConnectionManager.trace.info(
+          'New user registered: $newUser.',
+          name: '0x0b',
+        );
         return true;
       }
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Error inserting user into database: $e'); 
+      DbConnectionManager.trace.error(
+        'DBaaS error inserting user into database: $e',
+        name: '0x0c',
+      );
       rethrow;
     }
   }  

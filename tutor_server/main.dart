@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dotenv/dotenv.dart';
+import 'package:logging/logging.dart';
+import 'package:tutor_server/src/auth/auth_authenticator.dart';
+import 'package:tutor_server/src/auth/auth_registrant.dart';
 import 'package:tutor_server/src/dbaas/db_connection_manager.dart';
-import 'package:tutor_server/src/trace/logger.dart';
-import 'package:tutor_server/src/trace/trace.dart';
+import 'package:tutor_server/src/trace/trc_service.dart';
+import 'package:tutor_server/src/trace/trc_system.dart';
 
 const fName = 'main.dart';
 
@@ -21,37 +24,37 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
     isProductionEnv: isProductionEnv,
     operationalMode: operationalMode
   );
-  Trace.info(
+  SystemTrace.info(
     'Logging system initialized successfully.',
     id: id,
     src: fnSignature,
-    tag: TraceTag.step,
+    tag: SystemTraceTag.step,
     name: 'x00',
   );
-  Trace.info(
+  SystemTrace.info(
     isProductionEnv
         ? 'Server is starting in Production environment.'
         : 'Server is starting in Development environment.',
     id: id,
     src: fnSignature,
-    tag: TraceTag.step,
+    tag: SystemTraceTag.step,
     name: 'x01',
   );
 
   if (await dbSetup(isProductionEnv: isProductionEnv)) {
-    Trace.info(
+    SystemTrace.info(
       'Database system initialized successfully.',
       id: id,
       src: fnSignature,
-      tag: TraceTag.step,
+      tag: SystemTraceTag.step,
       name: 'x02',
     );
   } else {
-    Trace.severe(
+    SystemTrace.severe(
       'Database system initialization failed.',
       id: id,
       src: fnSignature,
-      tag: TraceTag.error,
+      tag: SystemTraceTag.error,
       name: 'x03',
     );
   }
@@ -59,20 +62,20 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   /// 2. START THE SERVER
   
   try {
-    Trace.info(
+    SystemTrace.info(
       'Starting the server on $ip:$port.',
       id: id,
       src: fnSignature,
-      tag: TraceTag.step,
+      tag: SystemTraceTag.step,
       name: 'x04',
     );
     return serve(handler, ip, port);
   } catch (e) {
-    Trace.severe(
+    SystemTrace.severe(
       'Server startup failed with error: $e',
       id: id,
       src: fnSignature,
-      tag: TraceTag.error,
+      tag: SystemTraceTag.error,
       name: 'x05',
     );
 
@@ -84,8 +87,35 @@ Future<bool> logSetup({
   required bool isProductionEnv,
   required String operationalMode
   }) async {
-  // Instantiation of streaming trace interceptors
-  initLogger(isProduction: isProductionEnv, operationalMode: operationalMode);
+  // Enable hierarchical logging for the entire application.
+  // hierarchicalLoggingEnabled = true;
+
+  // Instantiation of system trace logger.
+  SystemTrace.logger = Logger('ETS_System');
+  SystemTrace.initLogger(
+    isProduction: isProductionEnv,
+    operationalMode: operationalMode
+  );
+
+  // Instantiation of service trace logger.
+  ServiceTrace.logger = Logger('ETS_Service');
+  ServiceTrace.initLogger(
+    isProduction: isProductionEnv,
+    operationalMode: operationalMode
+  );
+
+  // Instantiation of DbCM component trace logger.
+  DbConnectionManager.trace.logger = Logger('ETS_DB_Mang');
+  DbConnectionManager.trace.initLogger(isProductionEnv: isProductionEnv);
+
+  // Instantiation of AuReg component trace logger.
+  UserRegistrant.trace.logger = Logger('ETS_AU_Regt');
+  UserRegistrant.trace.initLogger(isProductionEnv: isProductionEnv);
+
+  // Instantiation of Au component trace logger.
+  UserAuthenticator.trace.logger = Logger('ETS_AU_Auth');
+  UserAuthenticator.trace.initLogger(isProductionEnv: isProductionEnv);
+
   return true;
 }
 

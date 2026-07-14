@@ -1,21 +1,21 @@
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
+import 'package:tutor_server/src/auth/auth_registrant.dart';
 import 'package:tutor_server/src/common.dart';
-import 'package:tutor_server/src/registrant.dart';
-import 'package:tutor_server/src/trace/trace.dart';
+import 'package:tutor_server/src/trace/trc_service.dart';
 
 const fName = 'routes/usr/auth/register_native.dart';
 
 Future<Response> onRequest(RequestContext context) async {
-  const fnSignature = '$fName:onRequest';
+  const fnSign = '$fName:onRequest';
   final method = context.request.method;
   final req = context.read<RequestInfo>();
 
-  Trace.debug( //DEBUG
+  ServiceTrace.debug( //DEBUG
     'Received user registration endpoint request.',
     id: req.id,
-    src: fnSignature,
-    tag: TraceTag.entry,
+    src: fnSign,
+    tag: ServiceTraceTag.entry,
     name: 'x01',
     pld: {
       'method': method.name,
@@ -25,24 +25,27 @@ Future<Response> onRequest(RequestContext context) async {
 
   return switch (method) {
     HttpMethod.post => await _handlePost(context),
-    _ => Response(
+    _ => Response.json(
       statusCode: HttpStatus.methodNotAllowed,
-      body: '${method.toString().toUpperCase()} method not supported',
+      body: {
+        'service_id': req.id,
+        'error': '${method.toString().toUpperCase()} method not supported'
+      },
     ),
   };
 }
 
 /// Handle POST request for user registration
 Future<Response> _handlePost(RequestContext context) async {
-  const fnSignature = '$fName:_handlePost';
+  const fnSign = '$fName:_handlePost';
   final body = await context.request.json() as Map<String, dynamic>;
   final req = context.read<RequestInfo>();
 
-  Trace.debug(
+  ServiceTrace.debug(
     'Processing user registration request.',
     id: req.id,
-    src: fnSignature,
-    tag: TraceTag.entry,
+    src: fnSign,
+    tag: ServiceTraceTag.entry,
     name: 'x02',
     pld: {
       'request_body': body,
@@ -52,7 +55,10 @@ Future<Response> _handlePost(RequestContext context) async {
   if ((!body.containsKey('username')) || (!body.containsKey('password'))) {
     return Response.json(
       statusCode: HttpStatus.badRequest,
-      body: {'error': 'Missing required fields: username and password'},
+      body: {
+        'service_id': req.id,
+        'error': 'Missing required fields: username and password'
+      },
     );
   }
 
@@ -67,11 +73,11 @@ Future<Response> _handlePost(RequestContext context) async {
     );
 
     if (userid == null) {
-      Trace.info(
+      ServiceTrace.info(
         'Requested Username conflicts with existing user.',
         id: req.id,
-        src: fnSignature,
-        tag: TraceTag.exit,
+        src: fnSign,
+        tag: ServiceTraceTag.exit,
         name: 'x05',
         pld: {
           'username': username,
@@ -79,14 +85,17 @@ Future<Response> _handlePost(RequestContext context) async {
       );
       return Response.json(
         statusCode: HttpStatus.conflict,
-        body: {'error': 'Username already exists.'},
+        body: {
+          'service_id': req.id,
+          'error': 'Username already exists.'
+        },
       );
     } else {
-      Trace.info(
+      ServiceTrace.info(
         'User registered successfully.',
         id: req.id,
-        src: fnSignature,
-        tag: TraceTag.exit,
+        src: fnSign,
+        tag: ServiceTraceTag.exit,
         name: 'x03',
         pld: {
           'username': username,
@@ -96,22 +105,26 @@ Future<Response> _handlePost(RequestContext context) async {
       return Response.json(
         statusCode: HttpStatus.created,
         body: {
+          'service_id': req.id,
           'message': 'User registered successfully',
           'username': username,
         },
       );
     }
-  } on ValidationException catch (e) {
+  } on ValidationException catch (ve) {
     return Response.json(
       statusCode: HttpStatus.unprocessableEntity,
-      body: {'error': 'Invalid value for ${e.field}'},
+      body: {
+        'service_id': req.id,
+        'error': 'Invalid value for ${ve.field}'
+      },
     );
   } catch (e) {
-    Trace.error(
+    ServiceTrace.error(
       'Error during user registration: $e',
       id: req.id,
-      src: fnSignature,
-      tag: TraceTag.error,
+      src: fnSign,
+      tag: ServiceTraceTag.error,
       name: 'x04',
       pld: {
         'error': e.toString(),
@@ -119,7 +132,10 @@ Future<Response> _handlePost(RequestContext context) async {
     );
     return Response.json(
       statusCode: HttpStatus.internalServerError,
-      body: {'error': 'Failed to serve the request.'},
+      body: {
+        'service_id': req.id,
+        'error': 'Failed to serve the request.'
+      },
     );
   }
 }

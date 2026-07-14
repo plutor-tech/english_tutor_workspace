@@ -1,24 +1,25 @@
 import 'dart:async';
-import 'dart:io';
+import 'package:logging/logging.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tutor_server/src/trace/trc_comp.dart';
 
 /// Manages the application's connection to the MongoDB database instance.
 class DbConnectionManager {
   /// Private static variable to hold the active database connection instance.
   static Db? _db;
 
-  /* NOTE: In a production environment, this should be loaded from 
-     environment variables. For security reasons, avoid hardcoding sensitive 
-     information like database credentials in your source code.
-     */
   /// MongoDB Atlas connection username.
   static late String uname;
+
   /// MongoDB Atlas connection password
   static late String pword;
+
   /// MongoDB Atlas cluster name.
   static late String clstr;
+
   /// MongoDB database name.
   static late String dname;
+
   /// MongoDB application name (for connection metadata).
   static late String aname;
 
@@ -26,7 +27,10 @@ class DbConnectionManager {
   static const Duration _conTO = Duration(seconds: 10);
 
   /// Timeout exception error messsage.
-  static const _toExcpErrMsg = 'MongoDB authentication handshake timed out';
+  static const String _conTOMsg = 'MongoDB authentication handshake timed out';
+
+  /// Component logger for logging database connection related events.
+  static final ComponentTrace trace = ComponentTrace();
 
   /// Returns an active instance of the database connection.
   /// Automatically initializes and opens the connection if it doesn't exist.
@@ -35,11 +39,11 @@ class DbConnectionManager {
     if (_db != null && _db!.isConnected) {
       return _db!;
     }
-    return _initializeDbConnection();
+    return _initDbConnection();
   }
 
   /// Initializes and opens the database connection.
-  static Future<Db> _initializeDbConnection() async {
+  static Future<Db> _initDbConnection() async {
     try {
       /// MongoDB connection URI.
       final mongoUri =
@@ -47,22 +51,36 @@ class DbConnectionManager {
 
       _db = await Db.create(mongoUri).timeout(
         _conTO,
-        onTimeout: () => throw TimeoutException(_toExcpErrMsg),
+        onTimeout: () {
+          trace.severe(
+            'Time-out error in establishing database connection.',
+            name: '0x01',
+          );
+          throw TimeoutException(_conTOMsg);
+        },
       );
 
       await _db!.open().timeout(
         _conTO,
         onTimeout: () {
+          trace.severe(
+            'Time-out error in opening database connection.',
+            name: '0x02',
+          );
           _db!.close();
-          throw TimeoutException(_toExcpErrMsg);
+          throw TimeoutException(_conTOMsg);
         },
       );
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('SUCCESS Connecting to the database.');
+      trace.info(
+        'Database connection is established successfully.',
+        name: '0x03',
+      );
       return _db!;
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stderr.writeln('ERROR Connecting to the database: $e.');
+      trace.severe(
+        'Attempt in establishing database connection failed.',
+        name: '0x04',
+      );
       rethrow;
     }
   }
@@ -73,11 +91,9 @@ class DbConnectionManager {
       try {
         await _db!.close();
         _db = null;
-        // ⚠️ TO-DO: Implement proper logging.
-        stdout.writeln('Database connection closed successfully.');
+        trace.info('Database connection closed successfully.', name: '0x05');
       } catch (e) {
-        // ⚠️ TO-DO: Implement proper logging.
-        stderr.writeln('Error closing database connection: $e');
+        trace.error('Error closing database connection: $e', name: '0x06');
       }
     }
   }

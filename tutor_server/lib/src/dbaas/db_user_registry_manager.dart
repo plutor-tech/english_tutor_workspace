@@ -20,8 +20,10 @@ class DbUserRegistryManager {
       db = await DbConnectionManager.dbConnection;
       coll = db.collection(_collName);
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Error initializing database connection: $e');
+      DbConnectionManager.trace.severe(
+        'Error initializing database connection: $e.',
+        name: '0x0d',
+      );
       throw NetworkException('$e');
     }
 
@@ -33,8 +35,11 @@ class DbUserRegistryManager {
         return false;
       }
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Database error: $e');
+      DbConnectionManager.trace.error(
+        'Database error finding user by username: $e.',
+        name: '0x0e',
+        assoc: username,
+      );
       throw DatabaseException('$e');
     }
   }
@@ -52,8 +57,10 @@ class DbUserRegistryManager {
       db = await DbConnectionManager.dbConnection;
       coll = db.collection(_collName);
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Error initializing database connection: $e');
+      DbConnectionManager.trace.severe(
+        'Error initializing database connection: $e.',
+        name: '0x0f',
+      );
       throw NetworkException('$e');
     }
 
@@ -69,8 +76,11 @@ class DbUserRegistryManager {
         return null;
       }
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Database error: $e');
+      DbConnectionManager.trace.error(
+        'Database error validating user: $e',
+        name: '0x20',
+        assoc: username
+      );
       throw DatabaseException('$e');
     }
   }
@@ -88,8 +98,10 @@ class DbUserRegistryManager {
       db = await DbConnectionManager.dbConnection;
       coll = db.collection(_collName);
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Error initializing database connection: $e');
+      DbConnectionManager.trace.severe(
+        'Error initializing database connection: $e.',
+        name: '0x21',
+      );
       throw NetworkException('$e');
     }
 
@@ -111,12 +123,20 @@ class DbUserRegistryManager {
           'password': user.password, // ⚠️ TO-DO: Hash before storing
         });
 
-        stdout.writeln('New user registered: $user'); // DEBUG
+        DbConnectionManager.trace.info(
+          'A new user is registered.',
+          name: '0x22',
+          assoc: username,
+          pld: {'user_data': user.toString()}
+        );
         return user.userid;
       }
     } catch (e) {
-      // ⚠️ TO-DO: Implement proper logging.
-      stdout.writeln('Database error: $e');
+      DbConnectionManager.trace.error(
+        'Database error inserting new user: $e',
+        name: '0x21',
+        assoc: username
+      );
       throw DatabaseException('$e');
     }
   }  

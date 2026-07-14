@@ -1,5 +1,5 @@
 import 'package:dart_frog/dart_frog.dart';
-import 'package:tutor_server/src/registrant.dart';
+import 'package:tutor_server/src/auth/auth_registrant.dart';
 
 final userReg = UserRegistrant();
 
