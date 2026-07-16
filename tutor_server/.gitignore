@@ -17,4 +17,5 @@ coverage/
 
 # Files and directories created by the developer
 .env
+production.env
 devnotes.txt

@@ -1,0 +1,6 @@
+.dart_tool/
+.git/
+.github/
+build/
+apps/tutor_server/.dart_frog/
+apps/tutor_server/build/

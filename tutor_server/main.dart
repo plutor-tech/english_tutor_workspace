@@ -88,7 +88,16 @@ Future<bool> logSetup({
   required String operationalMode
   }) async {
   // Enable hierarchical logging for the entire application.
-  // hierarchicalLoggingEnabled = true;
+  hierarchicalLoggingEnabled = true;
+
+  // Instantiation of Global trace which consumes the root logger,
+  // which is the first Logger instance. We aren't going to use it,
+  // this is to avoid mixing up other traces with system trace.
+  SystemTrace.logger = Logger('ETS_GLobal');
+  /* SystemTrace.initLogger(
+    isProduction: isProductionEnv,
+    operationalMode: operationalMode
+  ); */
 
   // Instantiation of system trace logger.
   SystemTrace.logger = Logger('ETS_System');
