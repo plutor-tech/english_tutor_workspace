@@ -4,5 +4,6 @@ environment:
 
 workspace:
   - apps/tutor_client
+  - apps/tutor_client_cli_test
   - tutor_server
   - packages/tutor_shared

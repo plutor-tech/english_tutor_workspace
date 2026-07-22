@@ -566,6 +566,12 @@
       "languageVersion": "3.11"
     },
     {
+      "name": "tutor_client_cli_test",
+      "rootUri": "../apps/tutor_client_cli_test",
+      "packageUri": "lib/",
+      "languageVersion": "3.11"
+    },
+    {
       "name": "tutor_server",
       "rootUri": "../tutor_server",
       "packageUri": "lib/",
